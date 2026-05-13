@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Мои заявки — Школьная электронная библиотека{% endblock %}
+
+{% block content %}
+<section class="container section-gap">
+    <div class="section-head reveal">
+        <span class="section-label">Заявки</span>
+        <h1>Мои заявки на бронирование</h1>
+        <p>Здесь отображаются все ваши заявки на бронирование книг и их текущий статус.</p>
+    </div>
+
+    <div class="requests-toolbar reveal">
+        <button class="btn btn-outline-light" id="clearRequests">Очистить заявки</button>
+    </div>
+
+    <div id="requestsList" class="requests-list reveal"></div>
+    <div id="requestsEmpty" class="empty-state d-none reveal">
+        <h3>Пока нет заявок</h3>
+        <p>Открой книгу и отправь форму бронирования, чтобы заявка появилась здесь.</p>
+        <a class="btn btn-primary" href="{{ url_for('catalog') }}">Перейти в каталог</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Главная — Школьная электронная библиотека{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container hero-grid">
+        <div class="hero-copy reveal">
+            <span class="eyebrow">Школьная электронная библиотека Пивоваровской СОШ</span>
+            <h1>Книги, поиск, бронирование — в одном удобном месте</h1>
+            <p class="lead-copy">Интерактивный каталог школьной библиотеки, включающий обложки книг, информацию о доступности и функционал подачи заявок на бронирование, реализованный в одном удобном месте.</p>
+            <div class="d-flex flex-wrap gap-3 mt-4">
+                <a class="btn btn-primary btn-lg btn-glow" href="{{ url_for('catalog') }}">Открыть каталог</a>
+                <a class="btn btn-outline-light btn-lg" href="{{ url_for('requests_page') }}">Мои заявки</a>
+            </div>
+            <div class="hero-stats mt-4">
+                <div class="stat-card">
+                    <strong>{{ all_books|length }}</strong>
+                    <span>книг в каталоге</span>
+                </div>
+                <div class="stat-card">
+                    <strong>{{ all_books|selectattr('available')|list|length }}</strong>
+                    <span>доступны сейчас</span>
+                </div>
+                <div class="stat-card">
+                    <strong>124</strong>
+                    <span>книг в библиотеке</span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="hero-visual reveal">
+            <div class="floating-panel">
+                <div class="floating-badge">Популярные книги</div>
+                <div class="stacked-covers">
+                    {% for book in books[:3] %}
+                    <div class="mini-cover" style="background-image: url('{{ book.image if book.image else url_for('static', filename='img/book-placeholder.svg') }}');"></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container section-gap">
+    <div class="section-head reveal">
+        <span class="section-label">Популярное</span>
+        <h2>Рекомендуемые книги</h2>
+        <p>Подборка книг, которые пользуются наибольшей популярностью среди учеников и чаще всего выбираются для чтения.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for book in books %}
+        <div class="col-12 col-md-6 col-xl-3 reveal">
+            <article class="book-card h-100">
+                <div class="book-cover" style="background-image: url('{{ book.image if book.image else url_for('static', filename='img/book-placeholder.svg') }}');"></div>
+                <div class="book-body">
+                    <div class="book-meta">
+                        <span class="genre-pill">{{ book.genre }}</span>
+                        <span class="year-pill">{{ book.year }}</span>
+                    </div>
+                    <h3>{{ book.title }}</h3>
+                    <p class="text-muted mb-2">{{ book.author }}</p>
+                    <p class="book-desc">{{ book.description }}</p>
+                    <div class="d-flex align-items-center justify-content-between gap-2 mt-3">
+                        <span class="status-badge {% if book.available %}is-available{% else %}is-busy{% endif %}">
+                            {% if book.available %}В наличии{% else %}Нет в наличии{% endif %}
+                        </span>
+                        <a class="icon-link" href="{{ url_for('book', book_id=book.id) }}">Подробнее →</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} — Школьная электронная библиотека{% endblock %}
+
+{% block content %}
+<section class="container section-gap">
+    <div class="book-detail reveal">
+        <div class="book-detail-cover" style="background-image: url('{{ book.image if book.image else url_for('static', filename='img/book-placeholder.svg') }}');"></div>
+        <div class="book-detail-content">
+            <span class="eyebrow">{{ book.genre }}</span>
+            <h1>{{ book.title }}</h1>
+            <p class="book-author">{{ book.author }} · {{ book.year }}</p>
+
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="status-badge {% if book.available %}is-available{% else %}is-busy{% endif %}">
+                    {% if book.available %}Книга доступна{% else %}Книга сейчас занята{% endif %}
+                </span>
+                <span class="rating-badge">★ {{ book.rating }}</span>
+            </div>
+
+            <p class="book-paragraph">{{ book.description }}</p>
+            <p class="book-paragraph"><strong>Содержание:</strong> {{ book.content }}</p>
+
+            <div class="d-flex flex-wrap gap-3 mt-4">
+                <button class="btn btn-primary btn-glow" data-bs-toggle="collapse" data-bs-target="#reserveFormWrap">Забронировать книгу</button>
+                <a class="btn btn-outline-light" href="{{ url_for('catalog') }}">Вернуться в каталог</a>
+            </div>
+
+            <div class="collapse mt-4" id="reserveFormWrap">
+                <div class="reserve-panel">
+                    <h3 class="h5 mb-3">Форма бронирования</h3>
+                    <form class="reserve-form" data-book-id="{{ book.id }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="student_name" name="student_name" placeholder="ФИО ученика" required>
+                                    <label for="student_name">ФИО ученика</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="class_name" name="class_name" placeholder="Класс" required>
+                                    <label for="class_name">Класс (например 8Б)</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="contact" name="contact" placeholder="Контакт" required>
+                                    <label for="contact">Телефон или почта</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" id="date_needed" name="date_needed" required>
+                                    <label for="date_needed">Дата</label>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="comment" name="comment" placeholder="Комментарий" style="height: 100px"></textarea>
+                                    <label for="comment">Комментарий (необязательно)</label>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex flex-wrap gap-3 align-items-center">
+                                <button type="submit" class="btn btn-primary btn-glow">Отправить заявку</button>
+                                <span class="form-hint">Заявка сохранится на устройстве в разделе «Мои заявки».</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

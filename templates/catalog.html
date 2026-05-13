@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Каталог — Школьная электронная библиотека{% endblock %}
+
+{% block content %}
+<section class="container section-gap">
+    <div class="section-head reveal">
+        <span class="section-label">Каталог</span>
+        <h1>Все книги школьной библиотеки</h1>
+        <p>На этой странице вы можете найти нужную книгу с помощью поиска и фильтров по автору, жанру и наличию.</p>
+    </div>
+
+    <div class="filters-panel reveal">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-lg-5">
+                <label class="form-label">Поиск</label>
+                <input id="bookSearch" type="text" class="form-control form-control-lg" placeholder="Название или автор">
+            </div>
+            <div class="col-12 col-md-4 col-lg-3">
+                <label class="form-label">Жанр</label>
+                <select id="genreFilter" class="form-select form-select-lg">
+                    <option value="all">Все жанры</option>
+                    {% for genre in books|map(attribute='genre')|unique %}
+                    <option value="{{ genre }}">{{ genre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+                <label class="form-label">Наличие</label>
+                <select id="availabilityFilter" class="form-select form-select-lg">
+                    <option value="all">Все</option>
+                    <option value="available">В наличии</option>
+                    <option value="busy">Нет в наличии</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+                <button id="resetFilters" class="btn btn-outline-light btn-lg w-100">Сброс</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="book-grid mt-4" id="catalogGrid">
+        {% for book in books %}
+        <article class="book-card reveal catalog-item" 
+                 data-title="{{ book.title|lower }}"
+                 data-author="{{ book.author|lower }}"
+                 data-genre="{{ book.genre }}"
+                 data-available="{{ 'available' if book.available else 'busy' }}">
+            <div class="book-cover" style="background-image: url('{{ book.image if book.image else url_for('static', filename='img/book-placeholder.svg') }}');"></div>
+            <div class="book-body">
+                <div class="book-meta">
+                    <span class="genre-pill">{{ book.genre }}</span>
+                    <span class="year-pill">{{ book.year }}</span>
+                </div>
+                <h3>{{ book.title }}</h3>
+                <p class="book-author mb-2">{{ book.author }}</p>
+                <p class="book-desc">{{ book.description }}</p>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <span class="status-badge {% if book.available %}is-available{% else %}is-busy{% endif %}">
+                        {% if book.available %}В наличии{% else %}Нет в наличии{% endif %}
+                    </span>
+                    <span class="rating-badge">★ {{ book.rating }}</span>
+                </div>
+                <div class="card-actions mt-4">
+                    <a class="btn btn-outline-light" href="{{ url_for('book', book_id=book.id) }}">Открыть</a>
+                    <button class="btn btn-primary reserve-btn" data-book-id="{{ book.id }}">Забронировать</button>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    <div id="emptyState" class="empty-state d-none reveal">
+        <h3>Ничего не найдено</h3>
+        <p>Попробуй изменить запрос или сбросить фильтры.</p>
+    </div>
+</section>
+{% endblock %}
